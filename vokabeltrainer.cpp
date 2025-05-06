@@ -1,5 +1,5 @@
 #include "vokabeltrainer.hpp"
-#include "dynamic_events.hpp"
+#include "input.hpp"
 
 bool App::OnInit() {
     MainFrame* mainFrame = new MainFrame("Vokabeltrainer");

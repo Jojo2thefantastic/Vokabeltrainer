@@ -1,5 +1,5 @@
-#ifndef DYNAMIC_EVENTS_HPP
-#define DYNAMIC_EVENTS_HPP
+#ifndef INPUT_HPP
+#define INPUT_HPP
 
 #include <wx/wx.h>
 
@@ -12,4 +12,4 @@ private:
     void on_text_changed(wxCommandEvent& evt);
 };
 
-#endif  // DYNAMIC_EVENTS_HPP
+#endif

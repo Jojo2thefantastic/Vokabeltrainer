@@ -17,7 +17,8 @@ include(CTest)
 
 set(CPP_SRCS  # all non-main source files
     vokabeltrainer.cpp
-    dynamic_events.cpp
+    input.cpp
+    database.cpp
 )
 
 
