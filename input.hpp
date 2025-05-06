@@ -2,14 +2,21 @@
 #define INPUT_HPP
 
 #include <wx/wx.h>
+#include "database.hpp"
 
 class MainFrame : public wxFrame {
 public:
     MainFrame(const wxString& title);
 private:
-    wxTextCtrl* text_{nullptr};
+    wxTextCtrl* italInput_{nullptr};
+    wxTextCtrl* gerInput_ {nullptr};
+    wxStaticText* title_;
+    wxStaticText* gerTitle_;
+    wxStaticText* italTitle_;
+    wxButton* saveButton_;
+    vocabDB db_;
 
-    void on_text_changed(wxCommandEvent& evt);
+    void on_save_clicked(wxCommandEvent& evt);
 };
 
 #endif
