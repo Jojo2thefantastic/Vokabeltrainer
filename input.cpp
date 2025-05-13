@@ -33,9 +33,9 @@ void MainFrame::create_input_panel()
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    title_ = new wxStaticText(inputPanel_, wxID_ANY, "Vokabeltrainer");
+    queryTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Wortschatzkammer");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-    title_->SetFont(titleFont);
+    queryTitle_->SetFont(titleFont);
 
     gerTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Deutsches Wort: ");
     wxFont gerTitleFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -49,14 +49,16 @@ void MainFrame::create_input_panel()
     mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
 
     mainSizer->AddSpacer(5);  // Abstand oben
-    mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    mainSizer->Add(queryTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
     mainSizer->Add(italTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 1);
     italInput_ = new wxTextCtrl(inputPanel_, wxID_ANY);
+    italInput_->SetHint("e.g. carino ");
     mainSizer->Add(italInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
     mainSizer->Add(gerTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 1);
     gerInput_ = new wxTextCtrl(inputPanel_, wxID_ANY);
+    gerInput_->SetHint("z.B. lieb ");
     mainSizer->Add(gerInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
     saveButton_ = new wxButton(inputPanel_, wxID_ANY, "Speichern");
