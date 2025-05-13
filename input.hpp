@@ -11,14 +11,17 @@ public:
 private:
     wxTextCtrl* italInput_{nullptr};
     wxTextCtrl* gerInput_ {nullptr};
-    wxStaticText* title_;
     wxStaticText* gerTitle_;
     wxStaticText* italTitle_;
+    wxStaticText* title_;
+    wxStaticText* inputTitle_;
+    wxStaticText* queryTitle_;
 
     wxButton* saveButton_;
     wxButton* queryButton_;
     wxButton* inputButton_;
-    wxButton* homeButton_;
+    wxButton* homeButtonInput_;
+    wxButton* homeButtonQuery_;
 
     vocabDB db_;
 

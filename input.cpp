@@ -31,6 +31,7 @@ void MainFrame::create_input_panel()
     inputPanel_ = new wxPanel(simplebook_);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     title_ = new wxStaticText(inputPanel_, wxID_ANY, "Vokabeltrainer");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -43,7 +44,11 @@ void MainFrame::create_input_panel()
     wxFont italTitleFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     italTitle_->SetFont((italTitleFont));
 
-    mainSizer->AddSpacer(20);  // Abstand oben
+    homeButtonInput_ = new wxButton(inputPanel_, wxID_ANY, "Home");
+    buttonSizer->Add(homeButtonInput_, 0, wxLEFT | wxTOP, 10);
+    mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
+
+    mainSizer->AddSpacer(5);  // Abstand oben
     mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
     mainSizer->Add(italTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 1);
@@ -56,16 +61,13 @@ void MainFrame::create_input_panel()
 
     saveButton_ = new wxButton(inputPanel_, wxID_ANY, "Speichern");
     mainSizer->Add(saveButton_, 0, wxALIGN_CENTER | wxALL, 10);
-    homeButton_ = new wxButton(inputPanel_, wxID_ANY, "Home");
-    mainSizer->Add(homeButton_, 0, wxALIGN_LEFT | wxALL, 10);
 
     saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_word_button_clicked, this);
-    homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
+    homeButtonInput_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
 
     inputPanel_->SetSizer(mainSizer);
     mainSizer->Fit(this);           // Fenster an Inhalt anpassen
     mainSizer->SetSizeHints(this);  // Mindestgröße setzen
-
 }
 
 void MainFrame::create_home_panel()
@@ -73,7 +75,7 @@ void MainFrame::create_home_panel()
     homePanel_ = new wxPanel(simplebook_);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
-    wxBoxSizer* buttonSizer = new wxBoxSizer(wxGA_HORIZONTAL);
+    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
     inputButton_ = new wxButton(homePanel_, wxID_ANY, "Wortspeicherung");
     queryButton_ = new wxButton(homePanel_, wxID_ANY, "Wortabfrage");
@@ -92,6 +94,20 @@ void MainFrame::create_home_panel()
 void MainFrame::create_query_panel()
 {
     queryPanel_ = new wxPanel(simplebook_);
+
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+
+    homeButtonQuery_ = new wxButton(queryPanel_, wxID_ANY, "Home");
+    buttonSizer->Add(homeButtonQuery_, 0, wxLEFT | wxTOP, 10);
+    mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
+
+    homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
+
+    queryPanel_->SetSizer(mainSizer);
+    mainSizer->Fit(this);
+    mainSizer->SetSizeHints(this);
+
 }
 void MainFrame::show_query_panel()
 {
