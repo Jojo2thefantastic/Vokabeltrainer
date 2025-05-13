@@ -11,13 +11,24 @@
 MainFrame::MainFrame(const wxString& title)
 : wxFrame(nullptr, wxID_ANY, title), db_("vokabeltrainer.db") {
 
-    //create_input_panel();
+    simplebook_ = new wxSimplebook(this, wxID_ANY);
+
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    mainSizer->Add(simplebook_, 1, wxEXPAND);
+    SetSizer(mainSizer);
+
     create_home_panel();
+    create_input_panel();
+    create_query_panel();
+
+    simplebook_->AddPage(homePanel_, "home", true);
+    simplebook_->AddPage(inputPanel_, "input", false);
+    simplebook_->AddPage(queryPanel_, "query", false);
 }
 
 void MainFrame::create_input_panel()
 {
-    inputPanel_ = new wxPanel(this);
+    inputPanel_ = new wxPanel(simplebook_);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
 
@@ -45,17 +56,21 @@ void MainFrame::create_input_panel()
 
     saveButton_ = new wxButton(inputPanel_, wxID_ANY, "Speichern");
     mainSizer->Add(saveButton_, 0, wxALIGN_CENTER | wxALL, 10);
+    homeButton_ = new wxButton(inputPanel_, wxID_ANY, "Home");
+    mainSizer->Add(homeButton_, 0, wxALIGN_LEFT | wxALL, 10);
 
-    saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_clicked, this);
+    saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_word_button_clicked, this);
+    homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
 
     inputPanel_->SetSizer(mainSizer);
     mainSizer->Fit(this);           // Fenster an Inhalt anpassen
     mainSizer->SetSizeHints(this);  // Mindestgröße setzen
+
 }
 
 void MainFrame::create_home_panel()
 {
-    homePanel_ = new wxPanel(this);
+    homePanel_ = new wxPanel(simplebook_);
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxGA_HORIZONTAL);
@@ -68,39 +83,33 @@ void MainFrame::create_home_panel()
 
     mainSizer->Add(buttonSizer, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 100);
 
+    inputButton_->Bind(wxEVT_BUTTON, &MainFrame::on_input_page_button_clicked, this);
+    queryButton_->Bind(wxEVT_BUTTON, &MainFrame::on_query_page_button_clicked, this);
+
     homePanel_->SetSizer(mainSizer);
 }
 
 void MainFrame::create_query_panel()
 {
-    queryPanel_ = new wxPanel(this);
+    queryPanel_ = new wxPanel(simplebook_);
 }
 void MainFrame::show_query_panel()
 {
-    homePanel_->Hide();
-    inputPanel_->Hide();
-    queryPanel_->Show();
-    Layout();
+    simplebook_->SetSelection(2);
 }
 
 void MainFrame::show_input_panel()
 {
-    homePanel_->Hide();
-    queryPanel_->Hide();
-    inputPanel_->Show();
-    Layout();
+    simplebook_->SetSelection(1);
 }
 
 void MainFrame::show_home_panel()
 {
-    inputPanel_->Hide();
-    queryPanel_->Hide();
-    homePanel_->Show();
-    Layout();
+    simplebook_->SetSelection(0);
 }
 
 
-void MainFrame::on_save_clicked(wxCommandEvent& evt)
+void MainFrame::on_save_word_button_clicked(wxCommandEvent& evt)
 {
     Word word;
     word.italWord = italInput_->GetValue().ToStdString();
@@ -115,5 +124,23 @@ void MainFrame::on_save_clicked(wxCommandEvent& evt)
     }
 
 }
+
+void MainFrame::on_query_page_button_clicked(wxCommandEvent& evt)
+{
+    show_query_panel();
+}
+
+void MainFrame::on_input_page_button_clicked(wxCommandEvent& evt)
+{
+    show_input_panel();
+}
+
+void MainFrame::on_home_page_button_clicked(wxCommandEvent& evt)
+{
+    show_home_panel();
+}
+
+
+
 
 
