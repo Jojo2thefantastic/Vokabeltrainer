@@ -13,6 +13,8 @@ class vocabDB {
 public:
     vocabDB(std::string filepath);
     void insertWord(const Word& word);
+    std::string getItalWord(const std::string& germanWord);
+    std::string getGerWord(const std::string& italianWord);
     SQLite::Database& getDB() { return db_; }
 private:
     SQLite::Database db_;

@@ -21,4 +21,30 @@ void vocabDB::insertWord(const Word& word)
     query.exec();
 }
 
+std::string vocabDB::getItalWord(const std::string& germanWord)
+{
+    SQLite::Statement query(db_, "SELECT italWord FROM vocabulary WHERE gerWord = ?");
+    query.bind(1, germanWord);
+    if (query.executeStep()){
+        return query.getColumn(0).getString();
+    }
+    else {
+        return "Wort nicht gefunden";
+    }
+}
+
+std::string vocabDB::getGerWord(const std::string& italianWord)
+{
+    SQLite::Statement query(db_, "SELECT gerWord FROM vocabulary WHERE italWord = ?");
+    query.bind(1, italianWord);
+    if (query.executeStep()){
+        return query.getColumn(0).getString();
+    }
+    else {
+        return "Wort nicht gefunden";
+    }
+}
+
+
+
 

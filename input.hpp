@@ -13,7 +13,7 @@ private:
     wxTextCtrl* gerInput_ {nullptr};
     wxStaticText* gerTitle_;
     wxStaticText* italTitle_;
-    wxStaticText* title_;
+    wxStaticText* homeTitle_;
     wxStaticText* inputTitle_;
     wxStaticText* queryTitle_;
 

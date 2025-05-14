@@ -79,6 +79,13 @@ void MainFrame::create_home_panel()
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
+    homeTitle_ = new wxStaticText(homePanel_, wxID_ANY, "Vokabeltrainer");
+    wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    homeTitle_->SetFont(titleFont);
+
+    mainSizer->AddSpacer(30);
+    mainSizer->Add(homeTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 10);
+
     inputButton_ = new wxButton(homePanel_, wxID_ANY, "Wortspeicherung");
     queryButton_ = new wxButton(homePanel_, wxID_ANY, "Wortabfrage");
 
@@ -130,8 +137,8 @@ void MainFrame::show_home_panel()
 void MainFrame::on_save_word_button_clicked(wxCommandEvent& evt)
 {
     Word word;
-    word.italWord = italInput_->GetValue().ToStdString();
-    word.gerWord = gerInput_->GetValue().ToStdString();
+    word.italWord = italInput_->GetValue().ToUTF8();
+    word.gerWord = gerInput_->GetValue().ToUTF8();
 
     try{
         db_.insertWord(word);
