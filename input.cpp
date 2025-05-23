@@ -180,7 +180,7 @@ void MainFrame::show_home_panel()
 
 }
 
-void MainFrame::on_query_submit_button_clicked(wxCommandEvent& evt)
+void MainFrame::on_query_submit_button_clicked([[maybe_unused]]wxCommandEvent& evt)
 {
     std::string userAnswer = queryAnswerInput_->GetValue().ToStdString();
     std::string correct;
@@ -200,7 +200,7 @@ void MainFrame::on_query_submit_button_clicked(wxCommandEvent& evt)
 
 
 
-void MainFrame::on_save_word_button_clicked(wxCommandEvent& evt)
+void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
     Word word;
     word.italWord = italInput_->GetValue().ToUTF8();
@@ -216,17 +216,17 @@ void MainFrame::on_save_word_button_clicked(wxCommandEvent& evt)
 
 }
 
-void MainFrame::on_query_page_button_clicked(wxCommandEvent& evt)
+void MainFrame::on_query_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
     show_query_panel();
 }
 
-void MainFrame::on_input_page_button_clicked(wxCommandEvent& evt)
+void MainFrame::on_input_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
     show_input_panel();
 }
 
-void MainFrame::on_home_page_button_clicked(wxCommandEvent& evt)
+void MainFrame::on_home_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
     show_home_panel();
 }
