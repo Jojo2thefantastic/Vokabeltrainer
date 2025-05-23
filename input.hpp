@@ -4,6 +4,7 @@
 #include <wx/wx.h>
 #include <wx/simplebook.h>
 #include "database.hpp"
+#include <string>
 
 class MainFrame : public wxFrame {
 public:
@@ -11,17 +12,23 @@ public:
 private:
     wxTextCtrl* italInput_{nullptr};
     wxTextCtrl* gerInput_ {nullptr};
+    wxTextCtrl* queryAnswerInput_{nullptr};
+
+
     wxStaticText* gerTitle_;
     wxStaticText* italTitle_;
     wxStaticText* homeTitle_;
     wxStaticText* inputTitle_;
     wxStaticText* queryTitle_;
+    wxStaticText* queryQuestion_;
+    wxStaticText* feedback_;
 
     wxButton* saveButton_;
     wxButton* queryButton_;
     wxButton* inputButton_;
     wxButton* homeButtonInput_;
     wxButton* homeButtonQuery_;
+    wxButton* querySubmitButton_;
 
     vocabDB db_;
 
@@ -31,10 +38,14 @@ private:
     wxPanel* queryPanel_;
     wxPanel* homePanel_;
 
+    std::string currentQueryWord_;
+    bool askWord_; // if true --> asked to translate an italian word / if false --> asked to translate a german word
+
     void on_save_word_button_clicked(wxCommandEvent& evt);
     void on_query_page_button_clicked(wxCommandEvent& evt);
     void on_input_page_button_clicked(wxCommandEvent& evt);
     void on_home_page_button_clicked(wxCommandEvent& evt);
+    void on_query_submit_button_clicked(wxCommandEvent& evt);
     void create_home_panel();
     void create_input_panel();
     void create_query_panel();

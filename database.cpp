@@ -1,5 +1,6 @@
 #include "database.hpp"
 #include <iostream>
+#include <stdexcept>
 
 vocabDB::vocabDB(std::string filepath)
 :db_(filepath, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE)
@@ -13,8 +14,24 @@ catch (std::exception& e) {
 }
 }
 
+bool vocabDB::checkForExistingWord(const Word& word)
+{
+    SQLite::Statement query(db_, "SELECT count(*) FROM vocabulary WHERE italWord = ? OR gerWord = ? ");
+    query.bind(1, word.italWord);
+    query.bind(2, word.gerWord);
+
+    query.executeStep();
+    int count = query.getColumn(0).getInt();
+    return count > 0;
+}
+
+
 void vocabDB::insertWord(const Word& word)
 {
+    if (checkForExistingWord(word)){
+        throw std::runtime_error("Wort existiert bereits in der Datenbank");
+    }
+
     SQLite::Statement query(db_, "INSERT INTO vocabulary (italWord, gerWord) VALUES (?, ?)");
     query.bind(1, word.italWord);
     query.bind(2, word.gerWord);
@@ -44,6 +61,20 @@ std::string vocabDB::getGerWord(const std::string& italianWord)
         return "Wort nicht gefunden";
     }
 }
+
+std::vector<Word> vocabDB::getAllWords()
+{
+    std::vector<Word> words;
+    SQLite::Statement query(db_, "SELECT gerWord, italWord FROM vocabulary");
+    while (query.executeStep()){
+        Word word;
+        word.gerWord = query.getColumn(0).getString();
+        word.italWord = query.getColumn(1).getString();
+        words.push_back(word);
+    }
+    return words;
+}
+
 
 
 

@@ -2,10 +2,11 @@
 #include "database.hpp"
 
 #include <iostream>
-#include <string>
 
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
+#include <vector>
+#include <random>
 
 
 MainFrame::MainFrame(const wxString& title)
@@ -33,9 +34,9 @@ void MainFrame::create_input_panel()
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
-    queryTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Wortschatzkammer");
+    inputTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Wortschatzkammer");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-    queryTitle_->SetFont(titleFont);
+    inputTitle_->SetFont(titleFont);
 
     gerTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Deutsches Wort: ");
     wxFont gerTitleFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -49,7 +50,7 @@ void MainFrame::create_input_panel()
     mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
 
     mainSizer->AddSpacer(5);  // Abstand oben
-    mainSizer->Add(queryTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    mainSizer->Add(inputTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
     mainSizer->Add(italTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 1);
     italInput_ = new wxTextCtrl(inputPanel_, wxID_ANY);
@@ -107,11 +108,30 @@ void MainFrame::create_query_panel()
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 
+    queryTitle_ = new wxStaticText(queryPanel_, wxID_ANY, "Quiz");
+    wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    queryTitle_->SetFont(titleFont);
+
     homeButtonQuery_ = new wxButton(queryPanel_, wxID_ANY, "Home");
     buttonSizer->Add(homeButtonQuery_, 0, wxLEFT | wxTOP, 10);
     mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
 
+    mainSizer->AddSpacer(5);  // Abstand oben
+    mainSizer->Add(queryTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    queryQuestion_ = new wxStaticText(queryPanel_, wxID_ANY, "Frage wird geladen...");
+    mainSizer->Add(queryQuestion_, 0, wxALIGN_CENTER | wxALL, 10);
+
+    queryAnswerInput_ = new wxTextCtrl(queryPanel_, wxID_ANY);
+    mainSizer->Add(queryAnswerInput_, 0, wxALIGN_CENTER | wxALL, 5);
+
+    querySubmitButton_ = new wxButton(queryPanel_, wxID_ANY, "Senden");
+    mainSizer->Add(querySubmitButton_, 0, wxALIGN_CENTER | wxALL, 5);
+
+    feedback_ = new wxStaticText(queryPanel_, wxID_ANY, "");
+    mainSizer->Add(feedback_, 0, wxALIGN_CENTER | wxTOP, 10);
+
     homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
+    querySubmitButton_->Bind(wxEVT_BUTTON,  &MainFrame::on_query_submit_button_clicked, this);
 
     queryPanel_->SetSizer(mainSizer);
     mainSizer->Fit(this);
@@ -121,6 +141,32 @@ void MainFrame::create_query_panel()
 void MainFrame::show_query_panel()
 {
     simplebook_->SetSelection(2);
+
+    std::vector<Word> words = db_.getAllWords();
+    if (words.empty()){
+        queryQuestion_->SetLabel("Keine Wörter in der Datenbank");
+        querySubmitButton_->Disable();
+        return;
+    }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> wordDist(0, words.size() - 1);
+    std::uniform_int_distribution<> dirDist(0, 1);
+
+    Word word = words[wordDist(gen)];
+    askWord_ = dirDist(gen);
+
+    queryAnswerInput_->SetValue("");
+    feedback_->SetLabel("");
+
+    if(askWord_){
+        currentQueryWord_ = word.italWord;
+        queryQuestion_->SetLabel(wxString::FromUTF8("Übersetze das italienische Wort: ") + wxString::FromUTF8(word.italWord));
+    } else {
+        currentQueryWord_ = word.gerWord;
+        queryQuestion_->SetLabel(wxString::FromUTF8("Übersetze das deutsche Wort: ") + wxString::FromUTF8(word.gerWord));
+    }
 }
 
 void MainFrame::show_input_panel()
@@ -131,7 +177,27 @@ void MainFrame::show_input_panel()
 void MainFrame::show_home_panel()
 {
     simplebook_->SetSelection(0);
+
 }
+
+void MainFrame::on_query_submit_button_clicked(wxCommandEvent& evt)
+{
+    std::string userAnswer = queryAnswerInput_->GetValue().ToStdString();
+    std::string correct;
+
+    if (askWord_){
+        correct = db_.getGerWord(currentQueryWord_);
+    } else {
+        correct = db_.getItalWord(currentQueryWord_);
+    }
+
+    if (userAnswer == correct){
+        feedback_->SetLabel("Richtig!");
+    } else {
+        feedback_->SetLabel(wxString::FromUTF8("Falsch! Richtig wäre: ") + correct);
+    }
+}
+
 
 
 void MainFrame::on_save_word_button_clicked(wxCommandEvent& evt)
