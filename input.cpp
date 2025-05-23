@@ -34,6 +34,7 @@ MainFrame::MainFrame(const wxString& title)
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     mainSizer->Add(simplebook_, 1, wxEXPAND);
     SetSizer(mainSizer);
+    SetBackgroundColour(wxColour(193, 193, 215));
 
     create_home_panel();
     create_input_panel();
@@ -54,13 +55,16 @@ void MainFrame::create_input_panel()
     inputTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Wortschatzkammer");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     inputTitle_->SetFont(titleFont);
+    inputTitle_->SetForegroundColour(wxColour(50, 50, 78));
 
     gerTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Deutsches Wort: ");
-    wxFont gerTitleFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    wxFont gerTitleFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     gerTitle_->SetFont(gerTitleFont);
+    gerTitle_->SetForegroundColour(wxColour(50, 50, 78));
     italTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Italienisches Wort: ");
-    wxFont italTitleFont(10, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    wxFont italTitleFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     italTitle_->SetFont((italTitleFont));
+    italTitle_->SetForegroundColour(wxColour(50, 50, 78));
 
     homeButtonInput_ = new wxButton(inputPanel_, wxID_ANY, "Home");
     buttonSizer->Add(homeButtonInput_, 0, wxLEFT | wxTOP, 10);
@@ -100,6 +104,7 @@ void MainFrame::create_home_panel()
     homeTitle_ = new wxStaticText(homePanel_, wxID_ANY, "Vokabeltrainer");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     homeTitle_->SetFont(titleFont);
+    homeTitle_->SetForegroundColour(wxColour(50, 50, 78));
 
     mainSizer->AddSpacer(30);
     mainSizer->Add(homeTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 10);
@@ -128,14 +133,19 @@ void MainFrame::create_query_panel()
     queryTitle_ = new wxStaticText(queryPanel_, wxID_ANY, "Quiz");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
     queryTitle_->SetFont(titleFont);
+    queryTitle_->SetForegroundColour(wxColour(50, 50, 78));
 
     homeButtonQuery_ = new wxButton(queryPanel_, wxID_ANY, "Home");
+    homeButtonQuery_->SetForegroundColour(wxColour(50, 50, 78));
     buttonSizer->Add(homeButtonQuery_, 0, wxLEFT | wxTOP, 10);
     mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
 
     mainSizer->AddSpacer(5);  // Abstand oben
     mainSizer->Add(queryTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
     queryQuestion_ = new wxStaticText(queryPanel_, wxID_ANY, "Frage wird geladen...");
+    wxFont queryQuestionFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    queryQuestion_->SetFont(queryQuestionFont);
+    queryQuestion_->SetForegroundColour(wxColour(50, 50, 78));
     mainSizer->Add(queryQuestion_, 0, wxALIGN_CENTER | wxALL, 10);
 
     queryAnswerInput_ = new wxTextCtrl(queryPanel_, wxID_ANY);
@@ -145,6 +155,9 @@ void MainFrame::create_query_panel()
     mainSizer->Add(querySubmitButton_, 0, wxALIGN_CENTER | wxALL, 5);
 
     feedback_ = new wxStaticText(queryPanel_, wxID_ANY, "");
+    wxFont feedbackFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    feedback_->SetFont(feedbackFont);
+    feedback_->SetForegroundColour(wxColour(50, 50, 78));
     mainSizer->Add(feedback_, 0, wxALIGN_CENTER);
 
     homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
