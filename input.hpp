@@ -52,6 +52,9 @@ private:
     void show_input_panel();
     void show_query_panel();
     void show_home_panel();
+
+    //helper function
+    void trim(std::string& word);
 };
 
 #endif

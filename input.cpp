@@ -7,6 +7,23 @@
 #include <wx/spinctrl.h>
 #include <vector>
 #include <random>
+#include <cctype>
+#include <algorithm>
+
+//helper function
+void MainFrame::trim(std::string& word)
+{
+    // Remove leading whitespace
+    word.erase(word.begin(), std::find_if(word.begin(), word.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+
+    // Remove trailing whitespace
+    word.erase(std::find_if(word.rbegin(), word.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), word.end());
+}
+
 
 
 MainFrame::MainFrame(const wxString& title)
@@ -128,7 +145,7 @@ void MainFrame::create_query_panel()
     mainSizer->Add(querySubmitButton_, 0, wxALIGN_CENTER | wxALL, 5);
 
     feedback_ = new wxStaticText(queryPanel_, wxID_ANY, "");
-    mainSizer->Add(feedback_, 0, wxALIGN_CENTER | wxTOP, 10);
+    mainSizer->Add(feedback_, 0, wxALIGN_CENTER);
 
     homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
     querySubmitButton_->Bind(wxEVT_BUTTON,  &MainFrame::on_query_submit_button_clicked, this);
@@ -183,19 +200,26 @@ void MainFrame::show_home_panel()
 void MainFrame::on_query_submit_button_clicked([[maybe_unused]]wxCommandEvent& evt)
 {
     std::string userAnswer = queryAnswerInput_->GetValue().ToStdString();
+    std::transform(userAnswer.cbegin(), userAnswer.cend(), userAnswer.begin(), tolower);
+    trim(userAnswer);
     std::string correct;
 
     if (askWord_){
         correct = db_.getGerWord(currentQueryWord_);
+        std::transform(correct.cbegin(), correct.cend(), correct.begin(), _tolower);
     } else {
         correct = db_.getItalWord(currentQueryWord_);
+        std::transform(correct.cbegin(), correct.cend(), correct.begin(), _tolower);
     }
 
     if (userAnswer == correct){
         feedback_->SetLabel("Richtig!");
     } else {
+        correct[0] = static_cast<char>(std::toupper(correct[0]));
         feedback_->SetLabel(wxString::FromUTF8("Falsch! Richtig wäre: ") + correct);
     }
+
+    queryPanel_->Layout();
 }
 
 
@@ -205,6 +229,8 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
     Word word;
     word.italWord = italInput_->GetValue().ToUTF8();
     word.gerWord = gerInput_->GetValue().ToUTF8();
+    trim(word.italWord);
+    trim(word.gerWord);
 
     try{
         db_.insertWord(word);
