@@ -57,6 +57,7 @@ void MainFrame::create_input_panel()
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* buttonSizer2 = new wxBoxSizer(wxHORIZONTAL);
 
     inputTitle_ = new wxStaticText(inputPanel_, wxID_ANY, "Wortschatzkammer");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -90,7 +91,12 @@ void MainFrame::create_input_panel()
     mainSizer->Add(gerInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
     saveButton_ = new wxButton(inputPanel_, wxID_ANY, "Speichern");
-    mainSizer->Add(saveButton_, 0, wxALIGN_CENTER | wxALL, 10);
+    buttonSizer2->Add(saveButton_, 0, wxRIGHT, 10);
+
+    resetButtonInput_ = new wxButton(inputPanel_, wxID_ANY, "Neues Wort");
+    buttonSizer2->Add(resetButtonInput_, 0);
+
+    mainSizer->Add(buttonSizer2, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
     savingFeedback_ = new wxStaticText(inputPanel_, wxID_ANY, "");
     wxFont feedbackFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -100,6 +106,7 @@ void MainFrame::create_input_panel()
 
     saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_word_button_clicked, this);
     homeButtonInput_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
+    resetButtonInput_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_input_button_clicked, this);
 
     inputPanel_->SetSizer(mainSizer);
     mainSizer->Fit(this);           // Fenster an Inhalt anpassen
@@ -141,6 +148,7 @@ void MainFrame::create_query_panel()
 
     wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+    wxBoxSizer* buttonSizer2 = new wxBoxSizer(wxHORIZONTAL);
 
     queryTitle_ = new wxStaticText(queryPanel_, wxID_ANY, "Quiz");
     wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -164,7 +172,11 @@ void MainFrame::create_query_panel()
     mainSizer->Add(queryAnswerInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
     querySubmitButton_ = new wxButton(queryPanel_, wxID_ANY, "Senden");
-    mainSizer->Add(querySubmitButton_, 0, wxALIGN_CENTER | wxALL, 5);
+    buttonSizer2->Add(querySubmitButton_, 0, wxRIGHT, 10);
+
+    resetButtonQuery_ = new wxButton(queryPanel_, wxID_ANY, "Neues Wort ");
+    buttonSizer2->Add(resetButtonQuery_, 0);
+    mainSizer->Add(buttonSizer2, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
     queryFeedback_ = new wxStaticText(queryPanel_, wxID_ANY, "");
     wxFont feedbackFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
@@ -174,6 +186,7 @@ void MainFrame::create_query_panel()
 
     homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
     querySubmitButton_->Bind(wxEVT_BUTTON,  &MainFrame::on_query_submit_button_clicked, this);
+    resetButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_query_button_clicked, this);
 
     queryPanel_->SetSizer(mainSizer);
     mainSizer->Fit(this);
@@ -271,6 +284,19 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
     inputPanel_->Layout();
 
 }
+
+void MainFrame::on_reset_query_button_clicked([[maybe_unused]] wxCommandEvent& evt)
+{
+    show_query_panel();
+}
+
+void MainFrame::on_reset_input_button_clicked([[maybe_unused]] wxCommandEvent& evt)
+{
+    italInput_->Clear();
+    gerInput_->Clear();
+    show_input_panel();
+}
+
 
 void MainFrame::on_query_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {

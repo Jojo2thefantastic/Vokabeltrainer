@@ -30,6 +30,8 @@ private:
     wxButton* homeButtonInput_;
     wxButton* homeButtonQuery_;
     wxButton* querySubmitButton_;
+    wxButton* resetButtonQuery_;
+    wxButton* resetButtonInput_;
 
     vocabDB db_;
 
@@ -47,6 +49,8 @@ private:
     void on_input_page_button_clicked(wxCommandEvent& evt);
     void on_home_page_button_clicked(wxCommandEvent& evt);
     void on_query_submit_button_clicked(wxCommandEvent& evt);
+    void on_reset_query_button_clicked(wxCommandEvent& evt);
+    void on_reset_input_button_clicked(wxCommandEvent& evt);
     void create_home_panel();
     void create_input_panel();
     void create_query_panel();
