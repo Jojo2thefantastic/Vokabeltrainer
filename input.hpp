@@ -21,7 +21,8 @@ private:
     wxStaticText* inputTitle_;
     wxStaticText* queryTitle_;
     wxStaticText* queryQuestion_;
-    wxStaticText* feedback_;
+    wxStaticText* queryFeedback_;
+    wxStaticText* savingFeedback_;
 
     wxButton* saveButton_;
     wxButton* queryButton_;
@@ -55,6 +56,7 @@ private:
 
     //helper function
     void trim(std::string& word);
+    void toLowerCase(std::string& word);
 };
 
 #endif

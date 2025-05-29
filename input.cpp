@@ -24,6 +24,12 @@ void MainFrame::trim(std::string& word)
     }).base(), word.end());
 }
 
+void MainFrame::toLowerCase(std::string& word)
+{
+    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char ch) {return std::tolower(ch);});
+}
+
+
 
 
 MainFrame::MainFrame(const wxString& title)
@@ -85,6 +91,12 @@ void MainFrame::create_input_panel()
 
     saveButton_ = new wxButton(inputPanel_, wxID_ANY, "Speichern");
     mainSizer->Add(saveButton_, 0, wxALIGN_CENTER | wxALL, 10);
+
+    savingFeedback_ = new wxStaticText(inputPanel_, wxID_ANY, "");
+    wxFont feedbackFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    savingFeedback_->SetFont(feedbackFont);
+    savingFeedback_->SetForegroundColour(wxColour(50, 50, 78));
+    mainSizer->Add(savingFeedback_, 0, wxALIGN_CENTER);
 
     saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_word_button_clicked, this);
     homeButtonInput_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
@@ -154,11 +166,11 @@ void MainFrame::create_query_panel()
     querySubmitButton_ = new wxButton(queryPanel_, wxID_ANY, "Senden");
     mainSizer->Add(querySubmitButton_, 0, wxALIGN_CENTER | wxALL, 5);
 
-    feedback_ = new wxStaticText(queryPanel_, wxID_ANY, "");
+    queryFeedback_ = new wxStaticText(queryPanel_, wxID_ANY, "");
     wxFont feedbackFont(15, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-    feedback_->SetFont(feedbackFont);
-    feedback_->SetForegroundColour(wxColour(50, 50, 78));
-    mainSizer->Add(feedback_, 0, wxALIGN_CENTER);
+    queryFeedback_->SetFont(feedbackFont);
+    queryFeedback_->SetForegroundColour(wxColour(50, 50, 78));
+    mainSizer->Add(queryFeedback_, 0, wxALIGN_CENTER);
 
     homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
     querySubmitButton_->Bind(wxEVT_BUTTON,  &MainFrame::on_query_submit_button_clicked, this);
@@ -188,7 +200,7 @@ void MainFrame::show_query_panel()
     askWord_ = dirDist(gen);
 
     queryAnswerInput_->SetValue("");
-    feedback_->SetLabel("");
+    queryFeedback_->SetLabel("");
 
     if(askWord_){
         currentQueryWord_ = word.italWord;
@@ -202,6 +214,7 @@ void MainFrame::show_query_panel()
 void MainFrame::show_input_panel()
 {
     simplebook_->SetSelection(1);
+    savingFeedback_->SetLabel("");
 }
 
 void MainFrame::show_home_panel()
@@ -213,23 +226,23 @@ void MainFrame::show_home_panel()
 void MainFrame::on_query_submit_button_clicked([[maybe_unused]]wxCommandEvent& evt)
 {
     std::string userAnswer = queryAnswerInput_->GetValue().ToStdString();
-    std::transform(userAnswer.cbegin(), userAnswer.cend(), userAnswer.begin(), tolower);
+    toLowerCase(userAnswer);
     trim(userAnswer);
     std::string correct;
 
     if (askWord_){
         correct = db_.getGerWord(currentQueryWord_);
-        std::transform(correct.cbegin(), correct.cend(), correct.begin(), _tolower);
+        toLowerCase(correct);
     } else {
         correct = db_.getItalWord(currentQueryWord_);
-        std::transform(correct.cbegin(), correct.cend(), correct.begin(), _tolower);
+        toLowerCase(correct);
     }
 
     if (userAnswer == correct){
-        feedback_->SetLabel("Richtig!");
+        queryFeedback_->SetLabel("Richtig!");
     } else {
         correct[0] = static_cast<char>(std::toupper(correct[0]));
-        feedback_->SetLabel(wxString::FromUTF8("Falsch! Richtig wäre: ") + correct);
+        queryFeedback_->SetLabel(wxString::FromUTF8("Falsch! Richtig wäre: " + correct));
     }
 
     queryPanel_->Layout();
@@ -244,14 +257,18 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
     word.gerWord = gerInput_->GetValue().ToUTF8();
     trim(word.italWord);
     trim(word.gerWord);
+    toLowerCase(word.italWord);
+    toLowerCase(word.gerWord);
 
     try{
         db_.insertWord(word);
-        wxLogStatus("Wort gespeichert");
+        savingFeedback_->SetLabel("Wort gespeichert");
     }
     catch(std::exception& e){
-        wxLogError("Fehler beim Speichern: %s", e.what());
+        std::string error = "Fehler beim Speichern: " + static_cast<std::string>(e.what());
+        savingFeedback_->SetLabel(error);
     }
+    inputPanel_->Layout();
 
 }
 
