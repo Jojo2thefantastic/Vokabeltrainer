@@ -20,9 +20,31 @@ TEST_CASE("Testing Database", "[testingDB]")
 
     SECTION("Insert new word into DB", "[insert]")
     {
-        Word word = { " Cane ", "  Hund" };
+        Word word = { "hund", "cane" };
         REQUIRE_NOTHROW(db.insertWord(word));
         std::string german = db.getGerWord("cane");
+        std::string italian = db.getItalWord("hund");
         REQUIRE(german == "hund");
+        REQUIRE(italian == "cane");
+    }
+
+    SECTION("Insert new word with whitespace into DB", "[whitespace]")
+    {
+        Word word = {"    hund", "cane    "};
+        REQUIRE_NOTHROW(db.insertWord(word));
+        std::string german = db.getGerWord("cane    ");
+        std::string italian = db.getItalWord("    hund");
+        REQUIRE(german == "hund");
+        REQUIRE(italian == "cane");
+    }
+
+    SECTION("Insert new word with uppercase into DB", "[caseSensitivity]")
+    {
+        Word word = {"HuND", "cANe"};
+        REQUIRE_NOTHROW(db.insertWord(word));
+        std::string german = db.getGerWord("cANe");
+        std::string italian = db.getItalWord("HuND");
+        REQUIRE(german == "hund");
+        REQUIRE(italian == "cane");
     }
 }
