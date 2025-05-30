@@ -6,8 +6,6 @@
 #include <catch2/internal/catch_case_sensitive.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
 
-using Catch::CaseSensitive;
-using Catch::Matchers::Equals;
 
 TEST_CASE("Testing Database", "[testingDB]")
 {
@@ -46,5 +44,11 @@ TEST_CASE("Testing Database", "[testingDB]")
         std::string italian = db.getItalWord("HuND");
         REQUIRE(german == "hund");
         REQUIRE(italian == "cane");
+    }
+    SECTION("Insert same word into DB that already exists", "existingWord")
+    {
+        Word word = {"hund", "cane"};
+        REQUIRE_NOTHROW(db.insertWord(word));
+        REQUIRE_THROWS(db.insertWord(word));
     }
 }
