@@ -7,30 +7,6 @@
 #include <wx/spinctrl.h>
 #include <vector>
 #include <random>
-#include <cctype>
-#include <algorithm>
-
-//helper function
-void MainFrame::trim(std::string& word)
-{
-    // Remove leading whitespace
-    word.erase(word.begin(), std::find_if(word.begin(), word.end(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }));
-
-    // Remove trailing whitespace
-    word.erase(std::find_if(word.rbegin(), word.rend(), [](unsigned char ch) {
-        return !std::isspace(ch);
-    }).base(), word.end());
-}
-
-void MainFrame::toLowerCase(std::string& word)
-{
-    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char ch) {return std::tolower(ch);});
-}
-
-
-
 
 MainFrame::MainFrame(const wxString& title)
 : wxFrame(nullptr, wxID_ANY, title), db_("vokabeltrainer.db") {
@@ -239,16 +215,14 @@ void MainFrame::show_home_panel()
 void MainFrame::on_query_submit_button_clicked([[maybe_unused]]wxCommandEvent& evt)
 {
     std::string userAnswer = queryAnswerInput_->GetValue().ToStdString();
-    toLowerCase(userAnswer);
     trim(userAnswer);
+    toLowerCase(userAnswer);
     std::string correct;
 
     if (askWord_){
         correct = db_.getGerWord(currentQueryWord_);
-        toLowerCase(correct);
     } else {
         correct = db_.getItalWord(currentQueryWord_);
-        toLowerCase(correct);
     }
 
     if (userAnswer == correct){
@@ -268,10 +242,6 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
     Word word;
     word.italWord = italInput_->GetValue().ToUTF8();
     word.gerWord = gerInput_->GetValue().ToUTF8();
-    trim(word.italWord);
-    trim(word.gerWord);
-    toLowerCase(word.italWord);
-    toLowerCase(word.gerWord);
 
     try{
         db_.insertWord(word);

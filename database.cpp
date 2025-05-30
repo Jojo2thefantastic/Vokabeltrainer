@@ -1,6 +1,27 @@
 #include "database.hpp"
 #include <iostream>
 #include <stdexcept>
+#include <cctype>
+#include <algorithm>
+
+//helper function
+void trim(std::string& word)
+{
+    // Remove leading whitespace
+    word.erase(word.begin(), std::find_if(word.begin(), word.end(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }));
+
+    // Remove trailing whitespace
+    word.erase(std::find_if(word.rbegin(), word.rend(), [](unsigned char ch) {
+        return !std::isspace(ch);
+    }).base(), word.end());
+}
+
+void toLowerCase(std::string& word)
+{
+    std::transform(word.begin(), word.end(), word.begin(), [](unsigned char ch) {return std::tolower(ch);});
+}
 
 vocabDB::vocabDB(std::string filepath)
 :db_(filepath, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE)
@@ -26,8 +47,13 @@ bool vocabDB::checkForExistingWord(const Word& word)
 }
 
 
-void vocabDB::insertWord(const Word& word)
+void vocabDB::insertWord(Word& word)
 {
+    trim(word.italWord);
+    trim(word.gerWord);
+    toLowerCase(word.italWord);
+    toLowerCase(word.gerWord);
+
     if (checkForExistingWord(word)){
         throw std::runtime_error("Wort existiert bereits in der Datenbank");
     }
@@ -38,8 +64,10 @@ void vocabDB::insertWord(const Word& word)
     query.exec();
 }
 
-std::string vocabDB::getItalWord(const std::string& germanWord)
+std::string vocabDB::getItalWord(std::string germanWord)
 {
+    trim(germanWord);
+    toLowerCase(germanWord);
     SQLite::Statement query(db_, "SELECT italWord FROM vocabulary WHERE gerWord = ?");
     query.bind(1, germanWord);
     if (query.executeStep()){
@@ -50,8 +78,10 @@ std::string vocabDB::getItalWord(const std::string& germanWord)
     }
 }
 
-std::string vocabDB::getGerWord(const std::string& italianWord)
+std::string vocabDB::getGerWord(std::string italianWord)
 {
+    trim(italianWord);
+    toLowerCase(italianWord);
     SQLite::Statement query(db_, "SELECT gerWord FROM vocabulary WHERE italWord = ?");
     query.bind(1, italianWord);
     if (query.executeStep()){
