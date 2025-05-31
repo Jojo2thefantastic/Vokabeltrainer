@@ -24,9 +24,11 @@ HomePanel::HomePanel(wxWindow* parent)
 
     inputButton_ = new wxButton(this, wxID_ANY, "Wortspeicherung");
     queryButton_ = new wxButton(this, wxID_ANY, "Wortabfrage");
+    vocablistButton_ = new wxButton(this, wxID_ANY, "Vokabelliste");
 
     buttonSizer->Add(inputButton_, 0, wxALL, 10);
     buttonSizer->Add(queryButton_, 0, wxALL, 10);
+    buttonSizer->Add(vocablistButton_, 0, wxALL, 10);
 
     mainSizer->Add(buttonSizer, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 100);
 
@@ -139,6 +141,31 @@ QueryPanel::QueryPanel(wxWindow* parent)
     mainSizer->SetSizeHints(this);
 }
 
+VocablistPanel::VocablistPanel(wxWindow* parent)
+    :wxPanel(parent)
+{
+    wxBoxSizer* mainSizer = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer* buttonSizer = new wxBoxSizer(wxHORIZONTAL);
+
+    title_ = new wxStaticText(this, wxID_ANY, "Vokabelliste");
+    wxFont titleFont(30, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    title_->SetFont(titleFont);
+    title_->SetForegroundColour(wxColour(50, 50, 78));
+
+    homeButton_ = new wxButton(this, wxID_ANY, "Home");
+    homeButton_->SetForegroundColour(wxColour(50, 50, 78));
+    buttonSizer->Add(homeButton_, 0, wxLEFT | wxTOP, 10);
+    mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
+
+    mainSizer->AddSpacer(5);  // Abstand oben
+    mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+
+    SetSizer(mainSizer);
+    mainSizer->Fit(this);
+    mainSizer->SetSizeHints(this);
+}
+
+
 
 
 MainFrame::MainFrame(const wxString& title)
@@ -154,12 +181,12 @@ MainFrame::MainFrame(const wxString& title)
     create_home_panel();
     create_input_panel();
     create_query_panel();
+    create_vocablist_panel();
 
     simplebook_->AddPage(homePanel_, "home", true);
     simplebook_->AddPage(inputPanel_, "input", false);
     simplebook_->AddPage(queryPanel_, "query", false);
-
-
+    simplebook_->AddPage(vocablistPanel_, "vocablist", false);
 }
 
 void MainFrame::create_input_panel()
@@ -179,6 +206,7 @@ void MainFrame::create_home_panel()
 
     homePanel_->inputButton_->Bind(wxEVT_BUTTON, &MainFrame::on_input_page_button_clicked, this);
     homePanel_->queryButton_->Bind(wxEVT_BUTTON, &MainFrame::on_query_page_button_clicked, this);
+    homePanel_->vocablistButton_->Bind(wxEVT_BUTTON, &MainFrame::on_vocablist_page_button_clicked, this);
 }
 
 void MainFrame::create_query_panel()
@@ -190,6 +218,14 @@ void MainFrame::create_query_panel()
     queryPanel_->answerInput_->Bind(wxEVT_TEXT_ENTER, &MainFrame::on_query_submit_button_clicked, this);
     queryPanel_->resetButton_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_query_button_clicked, this);
 }
+
+void MainFrame::create_vocablist_panel()
+{
+    vocablistPanel_ = new VocablistPanel(simplebook_);
+
+    vocablistPanel_->homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
+}
+
 void MainFrame::show_query_panel()
 {
     simplebook_->SetSelection(2);
@@ -226,6 +262,12 @@ void MainFrame::show_input_panel()
     simplebook_->SetSelection(1);
     inputPanel_->feedback_->SetLabel("");
 }
+
+void MainFrame::show_vocablist_panel()
+{
+    simplebook_->SetSelection(3);
+}
+
 
 void MainFrame::show_home_panel()
 {
@@ -297,6 +339,11 @@ void MainFrame::on_query_page_button_clicked([[maybe_unused]] wxCommandEvent& ev
 void MainFrame::on_input_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
     show_input_panel();
+}
+
+void MainFrame::on_vocablist_page_button_clicked(wxCommandEvent& evt)
+{
+    show_vocablist_panel();
 }
 
 void MainFrame::on_home_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
