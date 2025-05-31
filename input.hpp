@@ -3,6 +3,7 @@
 
 #include <wx/wx.h>
 #include <wx/simplebook.h>
+#include <wx/grid.h>
 #include "database.hpp"
 #include <string>
 
@@ -61,6 +62,10 @@ public:
     wxStaticText* title_;
 
     wxButton* homeButton_;
+
+    wxGrid* wordGrid_;
+
+    void populate_table(const std::vector<Word>& words);
 };
 
 class MainFrame : public wxFrame {

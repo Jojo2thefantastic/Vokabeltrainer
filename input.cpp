@@ -2,6 +2,7 @@
 #include "database.hpp"
 
 #include <iostream>
+#include <cstddef>
 
 #include <wx/wx.h>
 #include <wx/spinctrl.h>
@@ -152,6 +153,18 @@ VocablistPanel::VocablistPanel(wxWindow* parent)
     title_->SetFont(titleFont);
     title_->SetForegroundColour(wxColour(50, 50, 78));
 
+    wordGrid_ = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+    wordGrid_->CreateGrid(0, 2);
+    wordGrid_->SetColLabelValue(0, "Deutsch");
+    wordGrid_->SetColLabelValue(1, "Italienisch");
+
+    wordGrid_->SetDefaultCellBackgroundColour(wxColour(193, 193, 215));
+    wordGrid_->SetLabelBackgroundColour(wxColour(193, 193, 215));
+    wordGrid_->SetGridLineColour(wxColour(50, 50, 78));
+    wordGrid_->EnableDragColSize(false);
+    wordGrid_->EnableDragRowSize(false);
+
+
     homeButton_ = new wxButton(this, wxID_ANY, "Home");
     homeButton_->SetForegroundColour(wxColour(50, 50, 78));
     buttonSizer->Add(homeButton_, 0, wxLEFT | wxTOP, 10);
@@ -159,6 +172,7 @@ VocablistPanel::VocablistPanel(wxWindow* parent)
 
     mainSizer->AddSpacer(5);  // Abstand oben
     mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    mainSizer->Add(wordGrid_, 1, wxALIGN_CENTER | wxALL, 20);
 
     SetSizer(mainSizer);
     mainSizer->Fit(this);
@@ -224,7 +238,9 @@ void MainFrame::create_vocablist_panel()
     vocablistPanel_ = new VocablistPanel(simplebook_);
 
     vocablistPanel_->homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
+
 }
+
 
 void MainFrame::show_query_panel()
 {
@@ -239,7 +255,7 @@ void MainFrame::show_query_panel()
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> wordDist(0, words.size() - 1);
+    std::uniform_int_distribution<> wordDist(0, static_cast<int>(words.size()) - 1);
     std::uniform_int_distribution<> dirDist(0, 1);
 
     Word word = words[wordDist(gen)];
@@ -266,6 +282,11 @@ void MainFrame::show_input_panel()
 void MainFrame::show_vocablist_panel()
 {
     simplebook_->SetSelection(3);
+    std::vector<Word> words = db_.getAllWords();
+    vocablistPanel_->populate_table(words);
+
+    vocablistPanel_->Layout();
+    vocablistPanel_->Refresh();
 }
 
 
@@ -273,6 +294,23 @@ void MainFrame::show_home_panel()
 {
     simplebook_->SetSelection(0);
 
+}
+
+void VocablistPanel::populate_table(const std::vector<Word>& words)
+{
+    wordGrid_->ClearGrid();
+
+    auto rowCount = wordGrid_->GetNumberRows();
+    if (rowCount < static_cast<int>(words.size())) {
+        wordGrid_->AppendRows(static_cast<int>(words.size()) - rowCount);
+    } else if (rowCount > static_cast<int>(words.size())) {
+        wordGrid_->DeleteRows(0, rowCount - static_cast<int>(words.size()));
+    }
+
+    for (int i = 0; i < static_cast<int>(words.size()); i++) {
+        wordGrid_->SetCellValue(i, 0, words[i].gerWord);
+        wordGrid_->SetCellValue(i, 1, words[i].italWord);
+    }
 }
 
 void MainFrame::on_query_submit_button_clicked([[maybe_unused]]wxCommandEvent& evt)
@@ -297,8 +335,6 @@ void MainFrame::on_query_submit_button_clicked([[maybe_unused]]wxCommandEvent& e
 
     queryPanel_->Layout();
 }
-
-
 
 void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
@@ -350,6 +386,8 @@ void MainFrame::on_home_page_button_clicked([[maybe_unused]] wxCommandEvent& evt
 {
     show_home_panel();
 }
+
+
 
 
 
