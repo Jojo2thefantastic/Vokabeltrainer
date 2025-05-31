@@ -6,43 +6,64 @@
 #include "database.hpp"
 #include <string>
 
+class HomePanel : public wxPanel {
+public:
+    HomePanel(wxWindow* parent);
+
+    wxStaticText* title_;
+
+    wxButton* queryButton_;
+    wxButton* inputButton_;
+};
+
+class InputPanel : public wxPanel {
+public:
+    InputPanel(wxWindow* parent);
+
+    wxStaticText* title_;
+    wxStaticText* gerTitle_;
+    wxStaticText* italTitle_;
+    wxStaticText* feedback_;
+
+    wxTextCtrl* italInput_{nullptr};
+    wxTextCtrl* gerInput_ {nullptr};
+
+    wxButton* saveButton_;
+    wxButton* homeButton_;
+    wxButton* resetButton_;
+};
+
+class QueryPanel : public wxPanel {
+public:
+    QueryPanel(wxWindow* parent);
+
+    wxTextCtrl* answerInput_{nullptr};
+
+    wxStaticText* title_;
+    wxStaticText* question_;
+    wxStaticText* feedback_;
+
+    wxButton* homeButton_;
+    wxButton* submitButton_;
+    wxButton* resetButton_;
+
+    std::string currentQueryWord_;
+    bool askWord_; // if true --> asked to translate an italian word / if false --> asked to translate a german word
+
+
+};
+
 class MainFrame : public wxFrame {
 public:
     MainFrame(const wxString& title);
 private:
-    wxTextCtrl* italInput_{nullptr};
-    wxTextCtrl* gerInput_ {nullptr};
-    wxTextCtrl* queryAnswerInput_{nullptr};
-
-
-    wxStaticText* gerTitle_;
-    wxStaticText* italTitle_;
-    wxStaticText* homeTitle_;
-    wxStaticText* inputTitle_;
-    wxStaticText* queryTitle_;
-    wxStaticText* queryQuestion_;
-    wxStaticText* queryFeedback_;
-    wxStaticText* savingFeedback_;
-
-    wxButton* saveButton_;
-    wxButton* queryButton_;
-    wxButton* inputButton_;
-    wxButton* homeButtonInput_;
-    wxButton* homeButtonQuery_;
-    wxButton* querySubmitButton_;
-    wxButton* resetButtonQuery_;
-    wxButton* resetButtonInput_;
-
     vocabDB db_;
 
     wxSimplebook* simplebook_;
 
-    wxPanel* inputPanel_;
-    wxPanel* queryPanel_;
-    wxPanel* homePanel_;
-
-    std::string currentQueryWord_;
-    bool askWord_; // if true --> asked to translate an italian word / if false --> asked to translate a german word
+    HomePanel* homePanel_;
+    InputPanel* inputPanel_;
+    QueryPanel* queryPanel_;
 
     void on_save_word_button_clicked(wxCommandEvent& evt);
     void on_query_page_button_clicked(wxCommandEvent& evt);
