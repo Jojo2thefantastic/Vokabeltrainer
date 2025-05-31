@@ -146,7 +146,7 @@ void MainFrame::create_query_panel()
     queryQuestion_->SetForegroundColour(wxColour(50, 50, 78));
     mainSizer->Add(queryQuestion_, 0, wxALIGN_CENTER | wxALL, 10);
 
-    queryAnswerInput_ = new wxTextCtrl(queryPanel_, wxID_ANY);
+    queryAnswerInput_ = new wxTextCtrl(queryPanel_, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     mainSizer->Add(queryAnswerInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
     querySubmitButton_ = new wxButton(queryPanel_, wxID_ANY, "Senden");
@@ -164,6 +164,7 @@ void MainFrame::create_query_panel()
 
     homeButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
     querySubmitButton_->Bind(wxEVT_BUTTON,  &MainFrame::on_query_submit_button_clicked, this);
+    queryAnswerInput_->Bind(wxEVT_TEXT_ENTER, &MainFrame::on_query_submit_button_clicked, this);
     resetButtonQuery_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_query_button_clicked, this);
 
     queryPanel_->SetSizer(mainSizer);
