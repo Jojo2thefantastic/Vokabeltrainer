@@ -57,12 +57,12 @@ void MainFrame::create_input_panel()
     mainSizer->Add(inputTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
 
     mainSizer->Add(italTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 1);
-    italInput_ = new wxTextCtrl(inputPanel_, wxID_ANY);
+    italInput_ = new wxTextCtrl(inputPanel_, wxID_ANY,"", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     italInput_->SetHint("e.g. carino ");
     mainSizer->Add(italInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
     mainSizer->Add(gerTitle_, 0, wxALIGN_CENTER | wxBOTTOM, 1);
-    gerInput_ = new wxTextCtrl(inputPanel_, wxID_ANY);
+    gerInput_ = new wxTextCtrl(inputPanel_, wxID_ANY, "", wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER);
     gerInput_->SetHint("z.B. lieb ");
     mainSizer->Add(gerInput_, 0, wxALIGN_CENTER | wxALL, 5);
 
@@ -81,6 +81,8 @@ void MainFrame::create_input_panel()
     mainSizer->Add(savingFeedback_, 0, wxALIGN_CENTER);
 
     saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_word_button_clicked, this);
+    italInput_->Bind(wxEVT_TEXT_ENTER, &MainFrame::on_save_word_button_clicked, this);
+    gerInput_->Bind(wxEVT_TEXT_ENTER, &MainFrame::on_save_word_button_clicked, this);
     homeButtonInput_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
     resetButtonInput_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_input_button_clicked, this);
 
@@ -249,7 +251,7 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
     }
     catch(std::exception& e){
         std::string error = "Fehler beim Speichern: " + static_cast<std::string>(e.what());
-        savingFeedback_->SetLabel(error);
+        savingFeedback_->SetLabel(wxString::FromUTF8(error));
     }
     inputPanel_->Layout();
 

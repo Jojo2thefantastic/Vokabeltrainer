@@ -54,6 +54,10 @@ void vocabDB::insertWord(Word& word)
     toLowerCase(word.italWord);
     toLowerCase(word.gerWord);
 
+    if(word.gerWord.empty() || word.italWord.empty()){
+        throw std::runtime_error("Wort inkonsitent. Beide Felder müssen ausgefüllt sein");
+    }
+
     if (checkForExistingWord(word)){
         throw std::runtime_error("Wort existiert bereits in der Datenbank");
     }
