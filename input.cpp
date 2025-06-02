@@ -20,7 +20,7 @@ HomePanel::HomePanel(wxWindow* parent)
     title_->SetFont(titleFont);
     title_->SetForegroundColour(wxColour(50, 50, 78));
 
-    mainSizer->AddSpacer(30);
+    mainSizer->AddSpacer(50);
     mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 10);
 
     inputButton_ = new wxButton(this, wxID_ANY, "Wortspeicherung");
@@ -31,7 +31,7 @@ HomePanel::HomePanel(wxWindow* parent)
     buttonSizer->Add(queryButton_, 0, wxALL, 10);
     buttonSizer->Add(vocablistButton_, 0, wxALL, 10);
 
-    mainSizer->Add(buttonSizer, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 100);
+    mainSizer->Add(buttonSizer, 0, wxALIGN_CENTER | wxTOP | wxLEFT | wxRIGHT, 15);
 
     SetSizer(mainSizer);
     mainSizer->Fit(this);           // Fenster an Inhalt anpassen
@@ -251,25 +251,27 @@ void MainFrame::show_query_panel()
         queryPanel_->question_->SetLabel("Keine Wörter in der Datenbank");
         queryPanel_->submitButton_->Disable();
         return;
-    }
-
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_int_distribution<> wordDist(0, static_cast<int>(words.size()) - 1);
-    std::uniform_int_distribution<> dirDist(0, 1);
-
-    Word word = words[wordDist(gen)];
-    queryPanel_->askWord_ = dirDist(gen);
-
-    queryPanel_->answerInput_->SetValue("");
-    queryPanel_->feedback_->SetLabel("");
-
-    if(queryPanel_->askWord_){
-        queryPanel_->currentQueryWord_ = word.italWord;
-        queryPanel_->question_->SetLabel(wxString::FromUTF8("Übersetze das italienische Wort: ") + wxString::FromUTF8(word.italWord));
     } else {
-        queryPanel_->currentQueryWord_ = word.gerWord;
-        queryPanel_->question_->SetLabel(wxString::FromUTF8("Übersetze das deutsche Wort: ") + wxString::FromUTF8(word.gerWord));
+        queryPanel_->submitButton_->Enable();
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_int_distribution<> wordDist(0, static_cast<int>(words.size()) - 1);
+        std::uniform_int_distribution<> dirDist(0, 1);
+
+        Word word = words[wordDist(gen)];
+        queryPanel_->askWord_ = dirDist(gen);
+
+        queryPanel_->answerInput_->SetValue("");
+        queryPanel_->feedback_->SetLabel("");
+
+        if(queryPanel_->askWord_){
+            queryPanel_->currentQueryWord_ = word.italWord;
+            queryPanel_->question_->SetLabel(wxString::FromUTF8("Übersetze das italienische Wort: ") + wxString::FromUTF8(word.italWord));
+        } else {
+            queryPanel_->currentQueryWord_ = word.gerWord;
+            queryPanel_->question_->SetLabel(wxString::FromUTF8("Übersetze das deutsche Wort: ") + wxString::FromUTF8(word.gerWord));
+        }
+        queryPanel_->Layout();
     }
 }
 
@@ -392,7 +394,7 @@ void MainFrame::on_input_page_button_clicked([[maybe_unused]] wxCommandEvent& ev
     show_input_panel();
 }
 
-void MainFrame::on_vocablist_page_button_clicked(wxCommandEvent& evt)
+void MainFrame::on_vocablist_page_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
     show_vocablist_panel();
 }

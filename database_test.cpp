@@ -45,10 +45,28 @@ TEST_CASE("Testing Database", "[testingDB]")
         REQUIRE(german == "hund");
         REQUIRE(italian == "cane");
     }
-    SECTION("Insert same word into DB that already exists", "existingWord")
+    SECTION("Insert same word into DB that already exists", "[existingWord]")
     {
         Word word = {"hund", "cane"};
         REQUIRE_NOTHROW(db.insertWord(word));
         REQUIRE_THROWS(db.insertWord(word));
+    }
+    SECTION("Delete german word from DB", "[deletedGerWord]")
+    {
+        std::string word = {"hund"};
+        Word testWord = {"hund", "cane"};
+        db.insertWord(testWord);
+        REQUIRE_NOTHROW(db.deleteWord(word));
+        auto res = db.getGerWord(word);
+        REQUIRE(res == "Wort nicht gefunden");
+    }
+    SECTION("Delete italian word from DB", "[deletedItalWord]")
+    {
+        std::string word = {"cane"};
+        Word testWord = {"hund", "cane"};
+        db.insertWord(testWord);
+        REQUIRE_NOTHROW(db.deleteWord(word));
+        auto res = db.getGerWord(word);
+        REQUIRE(res == "Wort nicht gefunden");
     }
 }
