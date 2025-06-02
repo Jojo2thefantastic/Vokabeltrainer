@@ -10,7 +10,11 @@ run the application it will communicate with your database. You can save german-
 
 ## User Manual 
 
+
+
 ### Home Screen 
 
+
+![grafik](https://github.com/user-attachments/assets/54d477e6-cba5-45bb-942b-9b12e5fab558)
 
 
