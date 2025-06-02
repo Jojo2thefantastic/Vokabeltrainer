@@ -310,8 +310,11 @@ void VocablistPanel::populate_table(const std::vector<Word>& words)
     }
 
     for (int i = 0; i < static_cast<int>(words.size()); i++) {
-        wordGrid_->SetCellValue(i, 0, words[i].gerWord);
-        wordGrid_->SetCellValue(i, 1, words[i].italWord);
+        wxString ger = wxString::FromUTF8(words[i].gerWord);
+        wxString ital = wxString::FromUTF8(words[i].italWord);
+
+        wordGrid_->SetCellValue(i, 0, ger);
+        wordGrid_->SetCellValue(i, 1, ital);
     }
 }
 
