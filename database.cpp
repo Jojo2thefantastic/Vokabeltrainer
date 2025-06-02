@@ -68,6 +68,14 @@ void vocabDB::insertWord(Word& word)
     query.exec();
 }
 
+void vocabDB::deleteWord(std::string word)
+{
+    SQLite::Statement query (db_, "DELETE FROM vocabulary WHERE gerWord = ? OR italWord = ?");
+    query.bind(1, word);
+    query.bind(2, word);
+    query.exec();
+}
+
 std::string vocabDB::getItalWord(std::string germanWord)
 {
     trim(germanWord);

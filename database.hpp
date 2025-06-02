@@ -18,6 +18,7 @@ class vocabDB {
 public:
     vocabDB(std::string filepath);
     void insertWord(Word& word);
+    void deleteWord(std::string word);
     bool checkForExistingWord(const Word& word);
     std::string getItalWord(std::string germanWord);
     std::string getGerWord(std::string italianWord);

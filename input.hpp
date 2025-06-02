@@ -60,9 +60,7 @@ public:
     VocablistPanel(wxWindow* parent);
 
     wxStaticText* title_;
-
     wxButton* homeButton_;
-
     wxGrid* wordGrid_;
 
     void populate_table(const std::vector<Word>& words);
@@ -89,6 +87,7 @@ private:
     void on_query_submit_button_clicked(wxCommandEvent& evt);
     void on_reset_query_button_clicked(wxCommandEvent& evt);
     void on_reset_input_button_clicked(wxCommandEvent& evt);
+    void on_cell_clicked(wxGridEvent& evt);
     void create_home_panel();
     void create_input_panel();
     void create_query_panel();

@@ -153,26 +153,27 @@ VocablistPanel::VocablistPanel(wxWindow* parent)
     title_->SetFont(titleFont);
     title_->SetForegroundColour(wxColour(50, 50, 78));
 
-    wordGrid_ = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER);
+    wordGrid_ = new wxGrid(this, wxID_ANY, wxDefaultPosition, wxDefaultSize);
     wordGrid_->CreateGrid(0, 2);
     wordGrid_->SetColLabelValue(0, "Deutsch");
     wordGrid_->SetColLabelValue(1, "Italienisch");
 
-    wordGrid_->SetDefaultCellBackgroundColour(wxColour(193, 193, 215));
-    wordGrid_->SetLabelBackgroundColour(wxColour(193, 193, 215));
-    wordGrid_->SetGridLineColour(wxColour(50, 50, 78));
+    wordGrid_->SetRowLabelSize(0);
     wordGrid_->EnableDragColSize(false);
     wordGrid_->EnableDragRowSize(false);
-
+    wordGrid_->EnableEditing(false);
+    wordGrid_->SetDefaultCellBackgroundColour(wxColour(193, 193, 215));
+    wordGrid_->SetLabelBackgroundColour(wxColour(242, 242, 242));
+    wordGrid_->SetGridLineColour(wxColour(217, 217, 217));
 
     homeButton_ = new wxButton(this, wxID_ANY, "Home");
     homeButton_->SetForegroundColour(wxColour(50, 50, 78));
     buttonSizer->Add(homeButton_, 0, wxLEFT | wxTOP, 10);
-    mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
 
+    mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
     mainSizer->AddSpacer(5);  // Abstand oben
     mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
-    mainSizer->Add(wordGrid_, 1, wxALIGN_CENTER | wxALL, 20);
+    mainSizer->Add(wordGrid_, 1, wxALIGN_CENTER | wxALL, 10);
 
     SetSizer(mainSizer);
     mainSizer->Fit(this);
@@ -236,9 +237,8 @@ void MainFrame::create_query_panel()
 void MainFrame::create_vocablist_panel()
 {
     vocablistPanel_ = new VocablistPanel(simplebook_);
-
     vocablistPanel_->homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
-
+    vocablistPanel_->Bind(wxEVT_GRID_CELL_LEFT_CLICK, &MainFrame::on_cell_clicked, this);
 }
 
 
@@ -353,6 +353,21 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
     inputPanel_->Layout();
 
 }
+
+void MainFrame::on_cell_clicked(wxGridEvent& evt)
+{
+    int row = evt.GetRow();
+    int col = evt.GetCol();
+
+    wxString wordToDelete = vocablistPanel_->wordGrid_->GetCellValue(row, col);
+    wxString message = wxString::Format(wxString::FromUTF8("Dieses Wort löschen: \%s\?"), wordToDelete);
+    if (wxMessageBox(message, wxString::FromUTF8("Bestätige"), wxYES_NO | wxICON_QUESTION) == wxYES)
+    {
+        db_.deleteWord(static_cast<std::string>(wordToDelete));
+        vocablistPanel_->wordGrid_->DeleteRows(row, 1);
+    }
+}
+
 
 void MainFrame::on_reset_query_button_clicked([[maybe_unused]] wxCommandEvent& evt)
 {
