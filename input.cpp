@@ -80,8 +80,11 @@ InputPanel::InputPanel(wxWindow* parent)
     saveButton_ = new wxButton(this, wxID_ANY, "Speichern");
     buttonSizer2->Add(saveButton_, 0, wxRIGHT, 10);
 
-    resetButton_ = new wxButton(this, wxID_ANY, "Neues Wort");
-    buttonSizer2->Add(resetButton_, 0);
+    deleteButton_ = new wxButton(this, wxID_ANY, wxString::FromUTF8("Löschen"));
+    buttonSizer2->Add(deleteButton_, 0, wxRIGHT, 10);
+
+    newWordButton_ = new wxButton(this, wxID_ANY, "Neues Wort");
+    buttonSizer2->Add(newWordButton_, 0);
 
     mainSizer->Add(buttonSizer2, 0, wxALIGN_CENTER | wxTOP | wxBOTTOM, 10);
 
@@ -170,6 +173,8 @@ VocablistPanel::VocablistPanel(wxWindow* parent)
     homeButton_->SetForegroundColour(wxColour(50, 50, 78));
     buttonSizer->Add(homeButton_, 0, wxLEFT | wxTOP, 10);
 
+    deleteMode_ = new wxCheckBox(this, wxID_ANY, "To be deleted");
+
     mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
     mainSizer->AddSpacer(5);  // Abstand oben
     mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
@@ -209,8 +214,9 @@ void MainFrame::create_input_panel()
     inputPanel_ = new InputPanel(simplebook_);
 
     inputPanel_->homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
-    inputPanel_->resetButton_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_input_button_clicked, this);
+    inputPanel_->deleteButton_->Bind(wxEVT_BUTTON, &MainFrame::on_reset_input_button_clicked, this);
     inputPanel_->saveButton_->Bind(wxEVT_BUTTON, &MainFrame::on_save_word_button_clicked, this);
+    inputPanel_->newWordButton_->Bind(wxEVT_BUTTON, &MainFrame::on_new_word_button_clicked, this);
     inputPanel_->italInput_->Bind(wxEVT_TEXT_ENTER, &MainFrame::on_save_word_button_clicked, this);
     inputPanel_->gerInput_->Bind(wxEVT_TEXT_ENTER, &MainFrame::on_save_word_button_clicked, this);
 }
@@ -359,6 +365,13 @@ void MainFrame::on_save_word_button_clicked([[maybe_unused]] wxCommandEvent& evt
 
 }
 
+void MainFrame::on_new_word_button_clicked(wxCommandEvent& evt)
+{
+    on_save_word_button_clicked(evt);
+    on_reset_input_button_clicked(evt);
+}
+
+
 void MainFrame::on_cell_clicked(wxGridEvent& evt)
 {
     int row = evt.GetRow();
@@ -383,7 +396,6 @@ void MainFrame::on_reset_input_button_clicked([[maybe_unused]] wxCommandEvent& e
 {
     inputPanel_->italInput_->Clear();
     inputPanel_->gerInput_->Clear();
-    show_input_panel();
 }
 
 
