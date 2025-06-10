@@ -92,6 +92,7 @@ private:
     void on_reset_input_button_clicked(wxCommandEvent& evt);
     void on_new_word_button_clicked(wxCommandEvent& evt);
     void on_cell_clicked(wxGridEvent& evt);
+    void on_delete_ceckbox_clicked(wxGridEvent& evt);
     void create_home_panel();
     void create_input_panel();
     void create_query_panel();

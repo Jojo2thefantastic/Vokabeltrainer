@@ -173,11 +173,12 @@ VocablistPanel::VocablistPanel(wxWindow* parent)
     homeButton_->SetForegroundColour(wxColour(50, 50, 78));
     buttonSizer->Add(homeButton_, 0, wxLEFT | wxTOP, 10);
 
-    deleteMode_ = new wxCheckBox(this, wxID_ANY, "To be deleted");
+    deleteMode_ = new wxCheckBox(this, wxID_ANY, wxString::FromUTF8("Wörter aus Tabelle löschen per Klick"));
 
     mainSizer->Add(buttonSizer, 0, wxALIGN_TOP);
     mainSizer->AddSpacer(5);  // Abstand oben
-    mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 20);
+    mainSizer->Add(title_, 0, wxALIGN_CENTER | wxBOTTOM, 15);
+    mainSizer->Add(deleteMode_,0, wxALIGN_CENTER);
     mainSizer->Add(wordGrid_, 1, wxALIGN_CENTER | wxALL, 10);
 
     SetSizer(mainSizer);
@@ -244,7 +245,8 @@ void MainFrame::create_vocablist_panel()
 {
     vocablistPanel_ = new VocablistPanel(simplebook_);
     vocablistPanel_->homeButton_->Bind(wxEVT_BUTTON, &MainFrame::on_home_page_button_clicked, this);
-    vocablistPanel_->Bind(wxEVT_GRID_CELL_LEFT_CLICK, &MainFrame::on_cell_clicked, this);
+    vocablistPanel_->Bind(wxEVT_GRID_CELL_LEFT_CLICK, &MainFrame::on_delete_ceckbox_clicked, this);
+
 }
 
 
@@ -385,6 +387,17 @@ void MainFrame::on_cell_clicked(wxGridEvent& evt)
         vocablistPanel_->wordGrid_->DeleteRows(row, 1);
     }
 }
+
+void MainFrame::on_delete_ceckbox_clicked(wxGridEvent& evt)
+{
+     if(vocablistPanel_->deleteMode_->IsChecked()){
+        on_cell_clicked(evt);
+     }
+     else {
+         evt.Skip();
+    }
+}
+
 
 
 void MainFrame::on_reset_query_button_clicked([[maybe_unused]] wxCommandEvent& evt)
